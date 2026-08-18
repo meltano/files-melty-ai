@@ -25,6 +25,7 @@ and see its settings.
 - Required settings are marked with `*`.
 - If you try to save without filling in all required (`*`) settings, the UI blocks the save and shows an error listing what's missing.
 - This is the UI equivalent of the `properties` map in a pipeline's YAML file (see [PipelineML → Key Fields](dataml-pipelineml.md)) — settings changed here are the same values you'd otherwise set as `<plugin-name>.<setting>: value` in `pipelines/*.yml`.
+- **Some plugins offer OAuth as an alternative to filling in the `*` fields by hand.** When a plugin supports it, the expanded settings panel shows a **Sign in with...** (or similar) button alongside the manual fields. Clicking it runs an OAuth consent flow and populates the relevant auth settings (tokens, etc.) automatically instead of you sourcing and pasting them in yourself. Not every plugin supports this — it depends on whether the connector has an OAuth flow defined. When it's not offered, filling in the required (`*`) fields manually is the only path.
 
 ### Streams
 
