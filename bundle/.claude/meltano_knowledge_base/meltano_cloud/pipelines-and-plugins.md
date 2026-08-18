@@ -41,6 +41,16 @@ Your discovery file describes all the Singer.io taps, dbt transforms, and Matati
 
 Need help with discovery files? Browse examples in the [Meltano Documentation](https://docs.meltano.com/getting-started/).
 
+### Choosing a plugin variant
+
+Many taps and targets are available in more than one variant (e.g. `meltanolabs`,
+`transferwise`, a vendor's own variant). When multiple variants exist for the same
+plugin, prefer the **`meltanolabs`** or **`matatika`** variants — these are maintained by the MeltanoLabs
+GitHub org and are the best-supported and most actively maintained options across the
+plugin ecosystem. Only choose a different variant if `meltanolabs` / `matatika` doesn't exist for that
+plugin, or if the workspace has a specific, documented reason to use another one (check
+`.claude/workspace_knowledge_base/plugins.md` for any such override before installing).
+
 ---
 
 ## Importing data

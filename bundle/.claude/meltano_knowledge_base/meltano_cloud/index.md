@@ -17,7 +17,7 @@ For open-source Meltano itself (the underlying ELT framework), see
 
 ## Building pipelines
 
-- [Pipelines and Plugins](pipelines-and-plugins.md) — adding plugins, importing data, transforming with dbt, automating actions and custom scripts
+- [Pipelines and Plugins](pipelines-and-plugins.md) — adding plugins, choosing a plugin variant (prefer `meltanolabs`), importing data, transforming with dbt, automating actions and custom scripts
 - [Data Stores](data-stores.md) — connecting Snowflake, Microsoft SQL Server, ClickHouse, MotherDuck
 - [Operations](operations.md) — pipeline diagnosis, log routing/monitoring, profile & security, local dev setup
 - [UI Guide](ui-guide.md) — hands-on UI navigation: editing a pipeline's settings/actions/triggers, installing plugins via the Plugins page, and the workspace Settings screen's Save/Deploy/Delete actions (not covered in the official docs)
