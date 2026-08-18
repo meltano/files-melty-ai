@@ -1,0 +1,69 @@
+default_environment: dev
+project_id: 01a01499-62a7-7dc0-a258-4d6e07defcfa
+
+plugins:
+  extractors:
+  - name: tap-spreadsheets-anywhere
+    variant: ets
+    pip_url: git+https://github.com/ets/tap-spreadsheets-anywhere.git@a780e6b551ac2a19692ae4e0726b381774e621c1
+    config:
+      tables:
+      - name: engineer_allocations_raw
+        path: https://docs.google.com/spreadsheets/d/${TAP_GOOGLE_SHEET_ID}/export?format=csv&gid=${TAP_GOOGLE_SHEET_GID}&filename=
+        pattern: engineer_allocations.csv
+        format: csv
+        start_date: '2000-01-01T00:00:00Z'
+        # Line number within the file: stable across runs, so re-running upserts
+        # in place instead of appending duplicates.
+        key_properties:
+        - _smart_source_lineno
+        prefer_schema_as_string: true
+        delimiter: ','
+        quotechar: '"'
+        field_names:
+        - col_01
+        - col_02
+        - col_03
+        - col_04
+        - col_05
+        - col_06
+        - col_07
+        - col_08
+        - col_09
+        - col_10
+        - col_11
+        - col_12
+        - col_13
+        - col_14
+        - col_15
+        - col_16
+        - col_17
+        - col_18
+        - col_19
+        - col_20
+        - col_21
+
+  loaders:
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      host: localhost
+      port: 5432
+      user: meltano
+      database: warehouse
+      default_target_schema: raw
+      add_record_metadata: true
+      # password comes from .env / TARGET_POSTGRES_PASSWORD
+
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+    config:
+      # One .jsonl file per stream, written to <project>/output/
+      destination_path: output
+
+environments:
+- name: dev
+- name: staging
+- name: prod

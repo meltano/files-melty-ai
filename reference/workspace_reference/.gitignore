@@ -1,0 +1,5 @@
+/venv
+/.meltano
+.env
+# Local Postgres warehouse cluster (see orchestrate/warehouse/pg.sh)
+/.pgdata

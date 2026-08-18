@@ -1,0 +1,33 @@
+# Docker alternative to orchestrate/warehouse/pg.sh
+#
+# Docker was NOT usable when this project was set up: the `docker` CLI resolves to
+# Docker Desktop on Windows but is not exposed to this WSL 2 distro. To use this file:
+#   Docker Desktop > Settings > Resources > WSL Integration > enable this distro > Apply & Restart
+#
+# Then, from the project root:
+#   ./orchestrate/warehouse/pg.sh stop          # free port 5432 first
+#   docker compose -f orchestrate/warehouse/docker-compose.yml up -d
+#
+# Same host/port/user/database as pg.sh, so meltano.yml needs no changes.
+services:
+  warehouse:
+    image: postgres:16
+    container_name: meltano-warehouse
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: meltano
+      POSTGRES_PASSWORD: meltano
+      POSTGRES_DB: warehouse
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - warehouse-data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meltano -d warehouse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  warehouse-data:

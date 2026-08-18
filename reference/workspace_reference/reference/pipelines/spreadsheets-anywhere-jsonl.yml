@@ -1,0 +1,7 @@
+version: pipelines/v0.1
+label: Engineer Allocations to JSONL
+timeout: 0
+max_retries: 0
+data_components:
+- tap-spreadsheets-anywhere
+- LocalFiles
