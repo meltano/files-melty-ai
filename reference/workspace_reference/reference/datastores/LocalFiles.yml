@@ -1,3 +1,0 @@
-version: datastores/v0.1
-name: LocalFiles
-data_plugin: loaders/target-jsonl--andyh1203

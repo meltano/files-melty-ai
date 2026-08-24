@@ -13,7 +13,34 @@ a filename.
 
 ## Keep in mind
 
+- **Plugins must be added with `meltano add`, and their lockfiles committed.** When you add an extractor, loader, or transform, install it with `meltano add <name> --plugin-type <type> --variant <variant>` (prefer the `meltanolabs` or `matatika` variants — see the plugins guidance) rather than hand-writing the plugin into `meltano.yml`. `meltano add` generates a `plugins/<type>/<name>--<variant>.lock` file that pins the plugin's full definition. If you did edit `meltano.yml` by hand, or a plugin is missing its lockfile, run `meltano lock` to (re)generate the lockfiles. **Always commit the `plugins/` directory (the `.lock` files) together with `meltano.yml`.** This is load-bearing on Meltano Cloud: a workspace deploy reconciles the pipeline from the committed `.lock` files, so a plugin whose lockfile is missing will **not** materialize as a data component and the pipeline will not run. After `meltano add`, validate with `meltano config <plugin> list` before running.
 - **Workspace / pipeline configuration questions often have a UI answer, not just a YAML one.** If the user asks how to configure their workspace, add a plugin, edit a pipeline, rename a workspace, change its logo, or trigger a deploy — check [`.claude/meltano_knowledge_base/meltano_cloud/ui-guide.md`](.claude/meltano_knowledge_base/meltano_cloud/ui-guide.md) first. It documents the actual click-path through the Meltano Cloud web app, which isn't in Meltano's official docs and isn't derivable from the DataML/API reference alone. Point to the UI flow when the user seems to be working in the app rather than editing workspace-as-code YAML directly — the two are equivalent but not interchangeable in explanation.
+
+## Meltano Cloud tools (MCP)
+
+When this repo is opened with the **`meltano-cloud` MCP server connected**, drive the hosted
+platform directly through these tools instead of sending the user to the UI. Prefer them for
+connector discovery, deploy, and troubleshooting. (If the tools aren't listed, the MCP isn't
+connected — fall back to the `meltano` CLI locally plus this KB.)
+
+**Discover connectors — use these *before* adding a plugin; don't guess names or settings:**
+- `find_connector` — search the connector registry by keyword and optional type, e.g. `{"query":"postgres","type":"loader"}`. Returns each match's `name`, `variant`, `type`, and description.
+- `get_connector_config` — the settings schema for a connector, e.g. `{"name":"target-postgres"}`. Ground your `meltano.yml` in the real setting names it returns, and use the per-setting `secret` flag to decide what goes in `.env` / `--store=dotenv` (never committed) vs. plain config.
+
+**Deploy (config-as-code → hosted):**
+- `deploy_workspace` — after you commit **and push** `meltano.yml` *and* the `plugins/*.lock` files, call `deploy_workspace {"workspaceId":"…"}` to reconcile the repo into the platform. It is asynchronous: it returns a LAUNCHED job — poll `list_jobs` until that job is COMPLETE, then `list_pipelines` shows the materialized pipelines.
+
+**Inspect / run / observe:**
+- `list_workspaces`, `list_pipelines`, `get_pipeline_config`, `get_workspace_repository`.
+- `run_pipeline {"pipelineId":"…"}` to trigger a run; `list_jobs` for status/exit codes; `get_job_logs {"jobId":"…"}` for logs.
+
+**Troubleshoot a failure:**
+- `diagnose_pipeline {"pipelineId":"…"}` — returns the latest failure plus assembled context (config, recent run history, log tails, repo source) to explain the root cause and draft a fix. Then fix in the repo, re-deploy, and re-run.
+
+**Insights over run history / data:**
+- `list_jobs` + `get_job_logs` for run outcomes; `query_warehouse` / `list_warehouse_tables` for row counts and data checks (these hit the workspace's default Postgres datastore only).
+
+**Typical build loop:** `find_connector` → `get_connector_config` → `meltano add` (which writes `plugins/*.lock`) → set secrets in `.env` → `meltano run` locally to validate → commit & push (`meltano.yml` + `plugins/*.lock`) → `deploy_workspace` → poll `list_jobs` → `run_pipeline` → on failure `diagnose_pipeline`.
 
 ## Tracking this workspace's own state
 
