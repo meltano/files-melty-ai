@@ -5,12 +5,10 @@ setup(
     version="0.1",
     description="Meltano knowledge base files for AI use.",
     packages=find_packages(),
-    package_data={
-        "bundle": [
-            "CLAUDE.md",
-            "AGENTS.md",
-            ".claude/meltano_knowledge_base/meltano/*.md",
-            ".claude/meltano_knowledge_base/meltano_cloud/*.md",
-        ]
-    },
+    # bundle/ is the single seed image: AGENTS.md + CLAUDE.md + the shared KB under
+    # .claude/meltano_knowledge_base/ + the golden-path reference project under
+    # reference/. Ship it wholesale (every file type, not just *.md) via MANIFEST.in +
+    # include_package_data so the reference's .yml/.lock/.py/.sql/.env.example/.gitkeep
+    # files are not silently dropped.
+    include_package_data=True,
 )

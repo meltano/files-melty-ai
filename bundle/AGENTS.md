@@ -11,6 +11,19 @@ and more current than what you already know.
 Both index files are topic maps — start there and follow the links rather than guessing
 a filename.
 
+## Golden-path reference project
+
+[`reference/workspace_reference/`](reference/workspace_reference/) is a complete, working
+Meltano project — a CSV source loaded into Postgres and JSONL — reproduced from scratch
+and known to run. When building or fixing a pipeline in this repo, read it for the exact
+shape of a correct project: the full [`meltano.yml`](reference/workspace_reference/meltano.yml),
+the committed [`plugins/*.lock`](reference/workspace_reference/plugins/) files, the
+[`.env.example`](reference/workspace_reference/.env.example) secret scaffolding, the
+`datastores/` and `pipelines/` layout, and a `transform/` SQL example. Prefer adapting
+this known-good structure over writing config from a blank page. See its
+[`README.md`](reference/workspace_reference/README.md) for the command sequence and gotchas.
+It is example material to copy patterns out of — not this workspace's own project.
+
 ## Keep in mind
 
 - **Plugins must be added with `meltano add`, and their lockfiles committed.** When you add an extractor, loader, or transform, install it with `meltano add <name> --plugin-type <type> --variant <variant>` (prefer the `meltanolabs` or `matatika` variants — see the plugins guidance) rather than hand-writing the plugin into `meltano.yml`. `meltano add` generates a `plugins/<type>/<name>--<variant>.lock` file that pins the plugin's full definition. If you did edit `meltano.yml` by hand, or a plugin is missing its lockfile, run `meltano lock` to (re)generate the lockfiles. **Always commit the `plugins/` directory (the `.lock` files) together with `meltano.yml`.** This is load-bearing on Meltano Cloud: a workspace deploy reconciles the pipeline from the committed `.lock` files, so a plugin whose lockfile is missing will **not** materialize as a data component and the pipeline will not run. After `meltano add`, validate with `meltano config <plugin> list` before running.

@@ -1,0 +1,4 @@
+# bundle/ is the seed image copied verbatim into customer repos. Include every file
+# under it (KB Markdown + the golden-path reference's yml/lock/py/sql/env/gitkeep),
+# not just *.md — package_data globs would otherwise miss the non-Markdown files.
+recursive-include bundle *
