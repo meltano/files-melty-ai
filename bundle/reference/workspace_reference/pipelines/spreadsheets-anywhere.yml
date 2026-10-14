@@ -1,4 +1,5 @@
 version: pipelines/v0.1
+type: INGESTION
 label: Engineer Allocations to Warehouse
 timeout: 0
 max_retries: 0
