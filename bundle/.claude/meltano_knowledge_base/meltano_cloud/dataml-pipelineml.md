@@ -10,6 +10,7 @@ Use the pipeline YAML to orchestrate data actions in your workspace as code. Pip
 
 ```yaml
 version: pipelines/v0.1
+type: WORKFLOW
 data_components:
 - notebook
 - sendgrid
@@ -31,6 +32,7 @@ triggered_by:
 | Path | JSON Type | Description |
 |---|---|---|
 | `version` | `string` | The version identifies this artifact type. |
+| `type` | `string` | `INGESTION` or `WORKFLOW` (any case). See [Pipeline types](#pipeline-types). |
 | `data_components` | `string[]` | The meltano.yml data component name. |
 | `actions` | `string[]` | The Meltano tasks that will be run as defined in your meltano.yml or Plugins. |
 | `inline_script` | `string` | Custom Bash script. Overrides `actions` if supplied. |
@@ -41,6 +43,45 @@ triggered_by:
 | `triggered_by` | `string[]` | Pipelines or workspace tasks that will trigger the pipeline on successful completion. Supported values for workspace tasks (case-insensitive): `deploy` — workspace deployment. |
 
 Further reading: Pipelines API resource (`/reference/cloud/api/resources/pipelines`).
+
+### Pipeline types
+
+Every pipeline is an **ingestion** or a **workflow**, set by `type:`.
+
+- **`INGESTION`** moves data from one source into one warehouse: exactly one extractor, any mappers, and exactly one loader (a data store such as `Warehouse`). Nothing else: no dbt or other transformer, no utility, no `inline_script`, and no plugin commands (`dbt:run`, `x:y`) in `actions`.
+- **`WORKFLOW`** is everything else: dbt, utilities, scripts, commands, several sources.
+
+dbt never goes in an ingestion. Put it in a workflow that lists the ingestion under `triggered_by`, so it runs after each sync:
+
+```yaml
+# pipelines/orders.yml
+version: pipelines/v0.1
+type: INGESTION
+data_components:
+- tap-postgres
+- Warehouse
+schedule: 0 0 0 * * *
+```
+
+```yaml
+# pipelines/orders-dbt.yml
+version: pipelines/v0.1
+type: WORKFLOW
+data_components:
+- dbt
+actions:
+- dbt:deps
+- dbt:run
+triggered_by:
+- orders
+```
+
+Rules on deploy:
+
+- **Always write `type:`.** A new file without it deploys as a `WORKFLOW`; for an existing pipeline, a missing `type:` keeps the type it already has.
+- The only allowed change is `WORKFLOW` → `INGESTION`, in place (the pipeline keeps its sync state). An ingestion can't become a workflow; create a new pipeline instead.
+- A file that breaks the ingestion rules (e.g. adds dbt), or names a type the pipeline can't take, still deploys, but as a **draft** that can't run until the file is fixed. The pipeline's problems say what to change.
+
 
 ---
 
