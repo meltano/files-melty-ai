@@ -73,6 +73,15 @@ Split by topic, mirroring the shape of the shared KB, e.g.:
 - `.claude/workspace_knowledge_base/settings.md` — workspace-level settings (name, active environment, approved domains, image, etc.)
 - `.claude/workspace_knowledge_base/rules.md` — workspace-specific conventions, constraints, or decisions that don't fit elsewhere
 
+**Start from `.claude/workspace_knowledge_base/workspace-configuration.md`.** Meltano Cloud
+writes it from the workspace's live configuration on every workspace commit, so it already
+covers what was set up in the app (e.g. by the setup wizard) before any agent was involved:
+settings, data stores, plugins, and each pipeline's type, schedule, triggers, actions, data
+components and loaded tables. **Don't edit it** — your changes are overwritten on the next
+commit. The topic files above are yours: use them for what that file can't hold (each
+pipeline's Why/What, non-default settings, rules, gotchas). If a pipeline listed there has no
+recorded intent in `pipelines.md`, ask the user for it (see below).
+
 **After making or helping make any change to this workspace** — adding/editing a
 pipeline, installing a plugin, connecting a data store, changing a workspace setting,
 whether done via the UI or by editing DataML YAML directly — update the relevant file(s)
