@@ -33,27 +33,40 @@ It is example material to copy patterns out of — not this workspace's own proj
 
 When this repo is opened with the **`meltano-cloud` MCP server connected**, drive the hosted
 platform directly through these tools instead of sending the user to the UI. Prefer them for
-connector discovery, deploy, and troubleshooting. (If the tools aren't listed, the MCP isn't
+connector discovery, publishing, and troubleshooting. (If the tools aren't listed, the MCP isn't
 connected — fall back to the `meltano` CLI locally plus this KB.)
 
-**Discover connectors — use these *before* adding a plugin; don't guess names or settings:**
+**Find connectors — use these *before* adding a plugin; don't guess names or settings:**
 - `find_connector` — search the connector registry by keyword and optional type, e.g. `{"query":"postgres","type":"loader"}`. Returns each match's `name`, `variant`, `type`, and description.
 - `get_connector_config` — the settings schema for a connector, e.g. `{"name":"target-postgres"}`. Ground your `meltano.yml` in the real setting names it returns, and use the per-setting `secret` flag to decide what goes in `.env` / `--store=dotenv` (never committed) vs. plain config.
+- `list_installed_connectors` — what this workspace already has, with `updateAvailable` per connector; `get_connector_update` / `update_connector` to review and apply an update.
 
-**Deploy (config-as-code → hosted):**
-- `deploy_workspace` — after you commit **and push** `meltano.yml` *and* the `plugins/*.lock` files, call `deploy_workspace {"workspaceId":"…"}` to reconcile the repo into the platform. It is asynchronous: it returns a LAUNCHED job — poll `list_jobs` until that job is COMPLETE, then `list_pipelines` shows the materialized pipelines.
+**Build on the platform (instead of editing files):**
+- `add_connector`, `create_pipeline` — install connectors and create pipelines directly. `create_pipeline` returns a `url` where the user enters secrets; no tool sets a password or token.
+
+**Publish and commit (repo ↔ platform):**
+- `publish_changes {"workspaceId":"…"}` — after you commit **and push** `meltano.yml` *and* the `plugins/*.lock` files, this applies the repo to the platform. Asynchronous: poll `list_runs` until the run is COMPLETE, then `list_pipelines` shows the pipelines.
+- `commit_changes` — the reverse: writes the platform's configuration to the repo and pushes. It **replaces** the repo with the platform's version, so check `get_pending_changes` first, and publish anything you pushed before committing.
+- `get_workspace` — status, data stores, and `managed`: whether Meltano Cloud owns this repository (see below). `get_workspace_repository` — the repo URL, branch and `cloneCommand`.
+
+**Discover streams and dbt sources:**
+- `discover_streams {"pipelineId":"…"}` — finds the streams (tables) a pipeline's source offers, without loading data. Run it after creating a pipeline or changing its source. Asynchronous: poll `list_runs` until it is COMPLETE.
+- `get_pipeline_config {"pipelineId":"…"}` — then returns `streams` (what discovery found, and whether each is `selected`) and, for an ingestion, `dbtSources`: the `path` and `content` of the dbt sources file for the tables it loads, named as its loader lands them.
+- **Managed workspace** (`get_workspace` → `managed: true`): Meltano Cloud commits that sources file to `transform/models/sources/` itself when discovery completes (or on `commit_changes`, when the workspace reviews commits; `discover_streams` says which) — pull it, don't write it.
+- **Unmanaged workspace** (`managed: false`, the customer's own repo): Meltano Cloud never commits to this repo, so the sources are yours to add. Write `dbtSources.content` to `dbtSources.path` unchanged, then commit and push it — runs clone the repo, so no publish is needed for it. Rerun the loop when the pipeline's streams or selection change. Keep the path, so the file is replaced rather than duplicated, and add tests, descriptions or columns in a sources file of your own rather than in this one.
 
 **Inspect / run / observe:**
-- `list_workspaces`, `list_pipelines`, `get_pipeline_config`, `get_workspace_repository`.
-- `run_pipeline {"pipelineId":"…"}` to trigger a run; `list_jobs` for status/exit codes; `get_job_logs {"jobId":"…"}` for logs.
+- `list_workspaces`, `list_pipelines` (`includeStability=true` for reliability questions).
+- `run_pipeline {"pipelineId":"…"}` to trigger a run; `list_runs` for status and stability; `get_run_logs` for logs; `get_pipeline_metrics` for rows loaded.
 
 **Troubleshoot a failure:**
-- `diagnose_pipeline {"pipelineId":"…"}` — returns the latest failure plus assembled context (config, recent run history, log tails, repo source) to explain the root cause and draft a fix. Then fix in the repo, re-deploy, and re-run.
+- `diagnose_pipeline {"pipelineId":"…"}` — returns the latest failure plus assembled context (config, recent run history, log tails, repo source) to explain the root cause and draft a fix. Then fix in the repo, publish, and re-run.
 
-**Insights over run history / data:**
-- `list_jobs` + `get_job_logs` for run outcomes; `query_warehouse` / `list_warehouse_tables` for row counts and data checks (these hit the workspace's default Postgres datastore only).
+**Data and docs:**
+- `describe_warehouse` / `query_warehouse` — tables, columns and read-only SQL over the workspace's managed warehouse (administrators only).
+- `search_docs` / `get_doc` — this knowledge base over MCP, for when the files aren't to hand.
 
-**Typical build loop:** `find_connector` → `get_connector_config` → `meltano add` (which writes `plugins/*.lock`) → set secrets in `.env` → `meltano run` locally to validate → commit & push (`meltano.yml` + `plugins/*.lock`) → `deploy_workspace` → poll `list_jobs` → `run_pipeline` → on failure `diagnose_pipeline`.
+**Typical build loop:** `find_connector` → `get_connector_config` → `meltano add` (which writes `plugins/*.lock`) → set secrets in `.env` → `meltano run` locally to validate → commit & push (`meltano.yml` + `plugins/*.lock`) → `publish_changes` → poll `list_runs` → `discover_streams` → (unmanaged: commit and push `dbtSources` from `get_pipeline_config`) → `run_pipeline` → on failure `diagnose_pipeline`.
 
 ## Tracking this workspace's own state
 
