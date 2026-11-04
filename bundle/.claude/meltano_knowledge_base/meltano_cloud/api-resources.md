@@ -712,6 +712,12 @@ Prerequisites: workspace must exist. Response: `200 OK`, Job collection with HAL
 **GET** `/api/pipelines/{pipeline-id}/jobs` — View all running or completed jobs for a pipeline.
 Prerequisites: pipeline must exist. Response: `200 OK`, Job collection with HAL links.
 
+Query parameters:
+
+| Parameter | Format | Default | Description |
+|---|---|---|---|
+| `type` | [Job Type](#job-type) | All types | Only the jobs of this type, for example `PIPELINE_RUN` for the pipeline's runs |
+
 **GET** `/api/jobs/{job-id}` — View a job.
 Prerequisites: job must exist. Response: `200 OK`, Job with HAL links.
 

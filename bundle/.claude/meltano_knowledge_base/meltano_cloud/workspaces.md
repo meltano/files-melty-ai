@@ -103,7 +103,7 @@ Think of it like a direct line from your code editor to your running workspace. 
 
 There are two ways to trigger a deployment:
 
-- **GitHub Webhook** (covered below): every push to the repository automatically deploys your workspace
+- **GitHub Webhook** (covered below): every push to the workspace's branch automatically deploys your workspace
 - **Manual deployment**: use the Meltano API or Postman collection to trigger a deployment on demand
 
 ### Setting up a GitHub Webhook
@@ -135,7 +135,7 @@ A webhook is a notification that GitHub sends to Meltano the moment you push new
 
 4. Click **Add webhook**.
 
-From this point on, every push to your workspace repository will automatically trigger a deployment and update your live workspace.
+From this point on, every push to your workspace's branch will automatically trigger a deployment and update your live workspace. Pushes to other branches or tags, branch deletions and pings are acknowledged without deploying.
 
 ### Triggering a manual deployment
 

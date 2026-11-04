@@ -673,12 +673,15 @@ meltano invoke --print-var <PLUGIN_ENVIRONMENT_VARIABLE_1> --print-var <PLUGIN_E
 Creates lock files for non-custom plugins.
 
 ```bash
-meltano lock                                    # all plugins
+meltano lock --all                              # all plugins
 meltano lock --plugin-type=<type>               # by type
 meltano lock <name> <name_two>                  # specific plugins
 meltano lock <name> <name_two> --plugin-type=<type>
-meltano lock --update                           # update lock file from Hub
+meltano lock --update --all                     # update lock files from Hub
 ```
+
+Exactly one of `--all` or a plugin name must be given. Omitting both exits 1
+with `Exactly one of --all or plugin name must be specified.`
 
 ### Using `lock` with Environments
 
