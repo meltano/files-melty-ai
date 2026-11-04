@@ -11,6 +11,17 @@ and more current than what you already know.
 Both index files are topic maps — start there and follow the links rather than guessing
 a filename.
 
+## Before working on the data, gather its context
+
+Before creating or changing dbt sources, models, tests or marts, writing datasets, or answering a
+question with SQL against the warehouse — without waiting to be asked — gather this project's data
+context and work within it. Follow
+[`.claude/meltano_knowledge_base/meltano_cloud/data-context.md`](.claude/meltano_knowledge_base/meltano_cloud/data-context.md)
+(also the `meltano-data-context` skill). It covers finding this project's Meltano Cloud workspace, the
+organisation's knowledge (every dataset tagged `#organisation-context`: its industry, the industry's
+data model, metric definitions, dbt conventions and data handling), the discovered streams, dbt sources
+and the warehouse, and recording what you learn as a dataset for the next reader.
+
 ## Golden-path reference project
 
 [`reference/workspace_reference/`](reference/workspace_reference/) is a complete, working
@@ -63,6 +74,7 @@ connected — fall back to the `meltano` CLI locally plus this KB.)
 - `diagnose_pipeline {"pipelineId":"…"}` — returns the latest failure plus assembled context (config, recent run history, log tails, repo source) to explain the root cause and draft a fix. Then fix in the repo, publish, and re-run.
 
 **Data and docs:**
+- `get_data_context` — everything the platform knows about the workspace's data in one call: organisation knowledge, each ingestion's streams and dbt sources, and the warehouse's tables and columns. Start data work here (see the section above).
 - `describe_warehouse` / `query_warehouse` — tables, columns and read-only SQL over the workspace's managed warehouse (administrators only).
 - `search_docs` / `get_doc` — this knowledge base over MCP, for when the files aren't to hand.
 

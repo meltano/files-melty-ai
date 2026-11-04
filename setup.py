@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="files-melty-ai",
-    version="0.1",
+    version="0.2.0",
     description="Meltano knowledge base files for AI use.",
     packages=find_packages(),
     # bundle/ is the single seed image: AGENTS.md + CLAUDE.md + the shared KB under

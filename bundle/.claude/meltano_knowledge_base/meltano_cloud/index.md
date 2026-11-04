@@ -14,6 +14,7 @@ For open-source Meltano itself (the underlying ELT framework), see
 
 - [Overview](overview.md) — what Meltano Cloud is and how it relates to open-source Meltano
 - [Workspaces](workspaces.md) — creating/managing a workspace, environments, DataOps promotion, members
+- [Data Context](data-context.md) — what to read before working on a project's data (models, sources, tests, datasets, warehouse SQL), where each piece comes from, and how to record what you learn
 - [Organisation Context](organisation-context.md) — the organisation's industry (`analyze/datasets/organisation-context.yml`), the industry context bundles it adds, and how to add both to your own repository over MCP
 
 ## Building pipelines
