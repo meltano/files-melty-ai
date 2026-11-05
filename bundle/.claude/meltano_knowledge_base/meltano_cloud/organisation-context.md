@@ -51,11 +51,30 @@ it, so edit `raw_data`, not the description.
 
 ## Industry context bundles
 
+Each bundle has the same five datasets about its industry: an overview with its segments and source
+systems, its data model, key metrics, dbt modelling conventions, and data handling.
+
 | Industry | Bundle | Datasets |
 |---|---|---|
-| Financial Services | `files-context-financial-services` | `analyze/datasets/financial-services/`: industry overview and source systems, data model, key metrics, dbt modelling conventions, data handling |
+| Agriculture | `files-context-agriculture` | `analyze/datasets/agriculture/` |
+| Construction | `files-context-construction` | `analyze/datasets/construction/` |
+| Education | `files-context-education` | `analyze/datasets/education/` |
+| Energy & Utilities | `files-context-energy-utilities` | `analyze/datasets/energy-utilities/` |
+| Financial Services | `files-context-financial-services` | `analyze/datasets/financial-services/` |
+| Government & Public Sector | `files-context-government-public-sector` | `analyze/datasets/government-public-sector/` |
+| Healthcare & Life Sciences | `files-context-healthcare-life-sciences` | `analyze/datasets/healthcare-life-sciences/` |
+| Hospitality & Travel | `files-context-hospitality-travel` | `analyze/datasets/hospitality-travel/` |
+| Manufacturing | `files-context-manufacturing` | `analyze/datasets/manufacturing/` |
+| Media & Entertainment | `files-context-media-entertainment` | `analyze/datasets/media-entertainment/` |
+| Non-profit | `files-context-non-profit` | `analyze/datasets/non-profit/` |
+| Professional Services | `files-context-professional-services` | `analyze/datasets/professional-services/` |
+| Real Estate | `files-context-real-estate` | `analyze/datasets/real-estate/` |
+| Retail & E-commerce | `files-context-retail-ecommerce` | `analyze/datasets/retail-ecommerce/` |
+| Technology & Software | `files-context-technology-software` | `analyze/datasets/technology-software/` |
+| Telecommunications | `files-context-telecommunications` | `analyze/datasets/telecommunications/` |
+| Transport & Logistics | `files-context-transport-logistics` | `analyze/datasets/transport-logistics/` |
 
-Every other industry is recorded in the dataset, with no bundle yet. The MCP tool
+Other is recorded in the dataset, with no bundle. The MCP tool
 `get_organisation_context` returns the industries it takes as `industries`. Prefer it over this
 table when they differ.
 
