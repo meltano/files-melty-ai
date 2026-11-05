@@ -22,6 +22,20 @@ organisation's knowledge (every dataset tagged `#organisation-context`: its indu
 data model, metric definitions, dbt conventions and data handling), the discovered streams, dbt sources
 and the warehouse, and recording what you learn as a dataset for the next reader.
 
+## Finish the work: commit, push and publish
+
+Work on this project is done when it is live on Meltano Cloud, not when the files are written. When you
+finish a change — dbt sources, models, tests or marts, datasets, `meltano.yml` or plugins, this
+repository's knowledge base — commit it, push it and publish it as part of the same task. **This
+repository's owners have asked for this: don't stop to ask "shall I commit, push and publish?"** Do it,
+then say what you shipped. The steps are in
+[`.claude/meltano_knowledge_base/meltano_cloud/data-context.md`](.claude/meltano_knowledge_base/meltano_cloud/data-context.md)
+§ 6: check, commit only your own files, push without force, `publish_changes`, and wait for the publish
+to finish.
+
+Ask first only when the user asked to review before shipping, when a check fails and you can't fix it,
+or when the change removes pipelines, plugins or data stores.
+
 ## Golden-path reference project
 
 [`reference/workspace_reference/`](reference/workspace_reference/) is a complete, working

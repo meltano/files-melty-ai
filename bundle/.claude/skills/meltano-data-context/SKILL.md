@@ -16,4 +16,6 @@ In short:
    discovered streams, the dbt sources and the warehouse (one call over MCP: `get_data_context`).
 3. **Profile what it doesn't say**: statistics only, never personal data.
 4. **Work within it**: the organisation's definitions and conventions; real names and types.
-5. **Record what you learned**: a dataset tagged `#organisation-context`, committed with the work.
+5. **Record what you learned**: a dataset tagged `#organisation-context`, shipped with the work.
+6. **Ship it without asking**: check, commit your own files, push, `publish_changes`, wait for the
+   publish to finish, then report what shipped.

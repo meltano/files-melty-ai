@@ -73,5 +73,33 @@ description: |
 ```
 
 Keep it to what isn't obvious from the column names and types: meanings, units, formats, gaps and
-caveats. Commit it with the work. In a repository Meltano Cloud doesn't manage, call `publish_changes`
-after pushing so the platform loads it.
+caveats. Ship it with the work (§ 6).
+
+## 6. Ship it: commit, push and publish
+
+The work is done when Meltano Cloud runs it, so commit, push and publish as part of the same task,
+without asking first. Ask only when the user asked to review first, when a check fails and you can't
+fix it, or when the change removes pipelines, plugins or data stores.
+
+1. **Check.** Where the project runs locally, run what you can: `meltano invoke dbt-<adapter> parse`
+   (or `compile`, or `build --select` the models you changed when the warehouse is reachable) and
+   `meltano config <plugin> list` for plugin changes. Stop and report a failure you can't fix; don't
+   push it.
+2. **Commit your own work.** Stage the files you created or changed by name, not `git add -A`. Leave
+   other uncommitted changes alone, and never commit `.env` or secrets. One commit whose message says
+   what the change adds and why.
+3. **Push** to the branch you are on. If the push is rejected because the remote has moved on (Meltano
+   Cloud commits dbt sources and `workspace-configuration.md` to the repositories it manages),
+   `git pull --rebase` and push again. Never force-push.
+4. **Publish** with `publish_changes` and the workspace's ID (§ 1), in a repository Meltano Cloud
+   manages and in one it doesn't: a push alone deploys nothing unless someone set up a deploy webhook,
+   and publishing is safe either way. It applies `meltano.yml`, plugins and datasets; runs pick up dbt
+   models from the repository. Publish only from the workspace's branch (`get_workspace_repository` →
+   `branch`); from another branch, push and say it needs merging.
+5. **Wait for it.** Poll `list_runs` until the publish is COMPLETE; if it fails, read `get_run_logs`,
+   fix the cause and ship again.
+6. **Report** what you shipped: the commit, what it adds, and which pipeline run will build any new
+   models. Start that run only if the user asked for it.
+
+Without the Meltano Cloud MCP tools connected, commit and push, then tell the user to publish from the
+app: **Deploy** on **Workspace → Settings** (see [ui-guide.md](ui-guide.md)).
