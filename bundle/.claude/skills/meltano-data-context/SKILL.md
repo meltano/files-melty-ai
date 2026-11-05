@@ -18,4 +18,4 @@ In short:
 4. **Work within it**: the organisation's definitions and conventions; real names and types.
 5. **Record what you learned**: a dataset tagged `#organisation-context`, shipped with the work.
 6. **Ship it without asking**: check, commit your own files, push, `publish_changes`, wait for the
-   publish to finish, then report what shipped.
+   publish, run what builds the new models, then show the user their results.

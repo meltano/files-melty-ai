@@ -97,9 +97,16 @@ fix it, or when the change removes pipelines, plugins or data stores.
    models from the repository. Publish only from the workspace's branch (`get_workspace_repository` →
    `branch`); from another branch, push and say it needs merging.
 5. **Wait for it.** Poll `list_runs` until the publish is COMPLETE; if it fails, read `get_run_logs`,
-   fix the cause and ship again.
-6. **Report** what you shipped: the commit, what it adds, and which pipeline run will build any new
-   models. Start that run only if the user asked for it.
+   fix the cause and ship again. A publish can wait a while before it starts. Keep polling, and leave
+   the rest of the list alone: other jobs in the workspace aren't yours to explain or clear.
+6. **Show it working.** When the work adds or changes dbt models, run the pipeline that builds them
+   with `run_pipeline`: the transform pipeline, or the ingestion that triggers it. Wait for that run,
+   then show the result: the models built and the tests passed (`get_run_logs`), and the question the
+   models were built for, answered from the new marts with `query_warehouse`. If the run fails, fix the
+   cause and ship again.
+7. **Report** in the user's terms: what the work adds, what the marts now answer, and the commit. Leave
+   out job types, run IDs and the platform's queue. If the platform still hasn't finished after you've
+   waited, say in one line that the work isn't live yet and that you'll keep checking.
 
 Without the Meltano Cloud MCP tools connected, commit and push, then tell the user to publish from the
 app: **Deploy** on **Workspace → Settings** (see [ui-guide.md](ui-guide.md)).

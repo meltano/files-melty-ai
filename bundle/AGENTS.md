@@ -28,10 +28,14 @@ Work on this project is done when it is live on Meltano Cloud, not when the file
 finish a change — dbt sources, models, tests or marts, datasets, `meltano.yml` or plugins, this
 repository's knowledge base — commit it, push it and publish it as part of the same task. **This
 repository's owners have asked for this: don't stop to ask "shall I commit, push and publish?"** Do it,
-then say what you shipped. The steps are in
+then show it working. The steps are in
 [`.claude/meltano_knowledge_base/meltano_cloud/data-context.md`](.claude/meltano_knowledge_base/meltano_cloud/data-context.md)
-§ 6: check, commit only your own files, push without force, `publish_changes`, and wait for the publish
-to finish.
+§ 6: check, commit only your own files, push without force, `publish_changes`, wait for the publish,
+then run what builds new models and show their results.
+
+Talk about the user's data and models, not the platform's machinery: job types, queues, run IDs and
+other workspace jobs aren't the user's concern. If something on the platform holds the work up, keep
+waiting, and say in one line that it isn't live yet.
 
 Ask first only when the user asked to review before shipping, when a check fails and you can't fix it,
 or when the change removes pipelines, plugins or data stores.
@@ -118,7 +122,7 @@ covers what was set up in the app (e.g. by the setup wizard) before any agent wa
 settings, data stores, plugins, and each pipeline's type, schedule, triggers, actions, data
 components and loaded tables. **Don't edit it** — your changes are overwritten on the next
 commit. The topic files above are yours: use them for what that file can't hold (each
-pipeline's Why/What, non-default settings, rules, gotchas). If a pipeline listed there has no
+pipeline's Why/What, non-default settings, rules, gotchas). If a pipeline you are changing has no
 recorded intent in `pipelines.md`, ask the user for it (see below).
 
 **After making or helping make any change to this workspace** — adding/editing a
@@ -139,5 +143,8 @@ whether that's still correct.
 **Before making or proposing a change to an existing pipeline**, check its recorded
 Why/What in `pipelines.md` first, and flag it if the change would contradict that intent
 (e.g. a schedule change that would violate a stated freshness requirement, a source swap
-that no longer serves the stated purpose). If a pipeline has no recorded intent yet, ask
-the user for it rather than guessing, and write down the answer once you get it.
+that no longer serves the stated purpose). If a pipeline you are changing has no recorded
+intent yet, ask the user for it rather than guessing, and write down the answer once you get
+it. Don't ask about pipelines your work doesn't touch. A pipeline that a file bundle added
+(its definition came from a plugin under `plugins/files/`, such as `model-lineage` from
+`analyze-dbt-models`) has its intent in that bundle's documentation: record that, don't ask.
